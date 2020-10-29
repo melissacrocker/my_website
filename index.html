@@ -2,23 +2,42 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width">
-		<title>Waste of Time</title>
+		<title>Population Growth</title>
 
-		<!--put your external stylesheet links here-->
-		<link rel="stylesheet" href="css/style.css">
-		<!--[if IE<9]>
-			<link rel="stylesheet" href="css/style.ie.css">
+        <!--[if IE]>
+			<script src=”html5shiv.googlecode.com/svn/trunk/html5.js”>
+			</script>
 		<![endif]-->
+        <!--stylesheet links here-->
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/style.css">
+
 	</head>
 
 	<body>
-		<!--put your initial page content here-->
-			
-		<!--you can also use this space for internal scripts or stylesheets;
-		place these within <script> or <style> tags-->
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <a class="navbar-brand"> <h1>World Population Growth 1950-2030</h1></a>
+        </nav>
+        
+        <div id ="info" class="container-fluid">
+            <div class="row">
+                <div class="sidebar col-xs-3">
+                    <p> Say Something</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="wrapper">
+            <div id="map"></div>
+        </div><!-- end wrapper -->
 
-		<!--put your external script links here-->
+		<!--script links here-->
+        <script type="text/javascript" src="js/jquery-3.5.1.js"></script>
+        <script type="text/jscript" src="js/leaflet-src.js"></script>
 		<script type="text/javascript" src="js/main.js"></script>
+        
+        
+
+        
 	</body>
 </html>
