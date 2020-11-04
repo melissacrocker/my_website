@@ -1,29 +1,22 @@
 /* js by Melissa Crocker, 2020 */
-//SVG dimension variables
-    var w = 900, h = 500;
 
-//execute script when window is loaded
-window.onload = function(){
+//begin script when window loads
+window.onload = setMap();
 
-    var container = d3.select("body") //get the <body> element from the DOM
-        .append("svg") //put a new svg in the body
-        .attr("width", w) //assign the width
-        .attr("height", h) //assign the height
-        .attr("class", "container") //always assign a class (as the block name) for styling and future selection
-        .style("background-color", "rgba(0,0,0,0.2)"); //only put a semicolon at the end of the block!
-        
-    
-    //innerRect block
-    var innerRect = container.append("rect") //put a new rect in the svg
-        .datum(400) //a single value is a datum
-        .attr("width", function(d){ //rectangle width
-            return d * 2; //400 * 2 = 800
-        }) 
-        .attr("height", function(d){ //rectangle height
-            return d; //400
-        })
-        .attr("class", "innerRect") //class name
-        .attr("x", 50) //position from left on the x (horizontal) axis
-        .attr("y", 50) //position from top on the y (vertical) axis
-        .style("fill", "#FFFFFF"); //fill color
+//set up choropleth map
+function setMap(){
+    //use queue to parallelize asynchronous data loading
+    d3_queue.queue()
+        .defer(d3.csv, "data/Lab2DataFinal.csv") //load attributes from csv
+        .defer(d3.json, "data/Colorado_County_Boundaries.topojson") //load choropleth spatial data
+        .await(callback);
+
+    function callback(error, csvData, counties){
+        //translate counties TopoJSON
+        var coloradoCounties = topojson.feature(counties, counties.objects.Colorado_County_Boundaries).features;
+            
+
+        //examine the results
+        console.log(coloradoCounties);
+    };
 };
