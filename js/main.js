@@ -5,6 +5,7 @@ window.onload = setMap();
 
 //set up choropleth map
 function setMap(){
+    
     //map frame dimensions
     var width = 960,
         height = 460;
@@ -18,10 +19,10 @@ function setMap(){
 
     //create Albers equal area conic projection centered on France
     var projection = d3.geoAlbers()
-        .center([0, 46.2])
-        .rotate([-2, 0, 0])
-        .parallels([43, 62])
-        .scale(2500)
+        .center([0, 33.6])
+        .rotate([102.82, -8.18, 0])
+        .parallels([29.5, 45.5])
+        .scale(2000)
         .translate([width / 2, height / 2]);
     
     //create svg path generator using the projection
@@ -49,6 +50,8 @@ function setMap(){
             .attr("d", path); //project data as geometry in svg
             
         //examine the results
+        
         console.log(coloradoCounties);
+        console.log(map.selectAll("path").size())
     };
 };
