@@ -17,12 +17,12 @@ function setMap(){
         .attr("width", width)
         .attr("height", height);
 
-    //create Albers equal area conic projection centered on France
+    //create Behrmann equal area cylindrical projection centered on Colorado
     var projection = d3.geoCylindricalEqualArea()
         .center([0, 33.6])
-        .rotate([102.82, -8.18, 0])
+        .rotate([105.5, -5.25, 0])
         .parallel([30])
-        .scale(2000)
+        .scale(5500)
         .translate([width / 2, height / 2]);
     
     //create svg path generator using the projection
