@@ -18,10 +18,10 @@ function setMap(){
         .attr("height", height);
 
     //create Albers equal area conic projection centered on France
-    var projection = d3.geoAlbers()
+    var projection = d3.geoCylindricalEqualArea()
         .center([0, 33.6])
         .rotate([102.82, -8.18, 0])
-        .parallels([29.5, 45.5])
+        .parallel([30])
         .scale(2000)
         .translate([width / 2, height / 2]);
     
@@ -48,10 +48,5 @@ function setMap(){
                 return "counties " + d.properties.countyFIPS;
             })
             .attr("d", path); //project data as geometry in svg
-            
-        //examine the results
-        
-        console.log(coloradoCounties);
-        console.log(map.selectAll("path").size())
     };
 };
