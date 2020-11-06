@@ -32,13 +32,23 @@ function setMap(){
     //use queue to parallelize asynchronous data loading
     d3_queue.queue()
         .defer(d3.csv, "data/Lab2DataFinal.csv") //load attributes from csv
+        .defer(d3.json, "data/US_State_Boundaries.topojson") //load background spatial data
         .defer(d3.json, "data/Colorado_County_Boundaries.topojson") //load choropleth spatial data
         .await(callback); //trigger callback function once data is loaded
 
-    function callback(error, csvData, colorado){
+    function callback(error, csvData, us, colorado){
+        //translate us Topojson
+        var usStates = topojson.feature(us, us.objects.US_State_Boundaries),
+        
         //translate colorado TopoJSON
-        var coloradoCounties = topojson.feature(colorado, colorado.objects.Colorado_County_Boundaries).features;
+            coloradoCounties = topojson.feature(colorado, colorado.objects.Colorado_County_Boundaries).features;
             
+        //add US states to map
+        var states = map.append("path")
+            .datum(usStates)
+            .attr("class", "states")
+            .attr("d", path);
+        
         //add Colorado counties to map
         var counties = map.selectAll(".counties")
             .data(coloradoCounties)
