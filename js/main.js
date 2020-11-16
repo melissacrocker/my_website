@@ -57,10 +57,11 @@ function setMap(){
         //join csv data to GeoJSON enumeration units
         coloradoCounties = joinData(coloradoCounties, csvData);
         
-        //add enumeration units to the map
-        setEnumerationUnits(coloradoCounties, map, path);
+        //create the color scale
+        var colorScale = makeColorScale(csvData);
         
-        console.log(coloradoCounties);
+        //add enumeration units to the map
+        setEnumerationUnits(coloradoCounties, map, path, colorScale);
     };
 };//end of setMap()
     
@@ -91,7 +92,7 @@ function joinData(coloradoCounties, csvData){
     return coloradoCounties;
 };
 
-function setEnumerationUnits(coloradoCounties, map, path){
+function setEnumerationUnits(coloradoCounties, map, path, colorScale){
     //add Colorado counties to map
     var counties = map.selectAll(".counties")
         .data(coloradoCounties)
@@ -100,7 +101,57 @@ function setEnumerationUnits(coloradoCounties, map, path){
         .attr("class", function(d){
             return "counties " + d.properties.countyFIPS;
         })
-        .attr("d", path); //project data as geometry in svg
+        .attr("d", path) //project data as geometry in svg
+        .style("fill", function(d){
+            return choropleth(d.properties, colorScale);
+        });
 };
     
+//function to create color scale generator
+function makeColorScale(csvData){
+    var colorClasses = [
+        "#fee5d9",
+        "#fcae91",
+        "#fb6a4a",
+        "#de2d26",
+        "#a50f15"
+    ];
+
+    //create color scale generator
+    var colorScale = d3.scaleThreshold()
+        .range(colorClasses);
+
+    //build array of all values of the expressed attribute
+    var domainArray = [];
+    for (var i=0; i<csvData.length; i++){
+        var val = parseFloat(csvData[i][expressed]);
+        domainArray.push(val);
+    };
+
+    //cluster data using ckmeans clustering algorithm to create natural breaks
+    var clusters = ss.ckmeans(domainArray, 5);
+    //reset domain array to cluster minimums
+    domainArray = clusters.map(function(d){
+        return d3.min(d);
+    });
+    //remove first value from domain array to create class breakpoints
+    domainArray.shift();
+
+    //assign array of last 4 cluster minimums as domain
+    colorScale.domain(domainArray);
+
+    return colorScale;
+};  
+    
+//function to test for data value and return color
+function choropleth(props, colorScale){
+    //make sure attribute value is a number
+    var val = parseFloat(props[expressed]);
+    //if attribute value exists, assign a color; otherwise assign gray
+    if (typeof val == 'number' && !isNaN(val)){
+        return colorScale(val);
+    } else {
+        return "#CCC";
+    };
+};
 })(); //last line of main.js

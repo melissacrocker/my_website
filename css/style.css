@@ -4,3 +4,9 @@
     stroke: #CCC;
     stroke-width: 2px;
 }   
+
+.counties {
+    stroke: #000;
+    stroke-width: 0.5px;
+    stroke-linecap: round;
+}
