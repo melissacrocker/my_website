@@ -58,5 +58,6 @@ function setMap(){
                 return "counties " + d.properties.countyFIPS;
             })
             .attr("d", path); //project data as geometry in svg
+        console.log(csvData);
     };
 };
