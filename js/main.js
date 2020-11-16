@@ -42,6 +42,32 @@ function setMap(){
         
         //translate colorado TopoJSON
             coloradoCounties = topojson.feature(colorado, colorado.objects.Colorado_County_Boundaries).features;
+        
+        //variables for data join
+        var attrArray = ["totCases", "totDeaths", "prctCaseDie", "prctUnins", "prctPOV"];
+
+        //loop through csv to assign each set of csv attribute values to geojson county
+        for (var i=0; i<csvData.length; i++){
+            var csvCounty = csvData[i]; //the current county
+            var csvKey = csvCounty.countyFIPS; //the CSV primary key
+
+            //loop through geojson counties to find correct county
+            for (var a=0; a<coloradoCounties.length; a++){
+
+                var geojsonProps = coloradoCounties[a].properties; //the current region geojson properties
+                var geojsonKey = geojsonProps.countyFIPS; //the geojson primary key
+
+                //where primary keys match, transfer csv data to geojson properties object
+                if (geojsonKey == csvKey){
+
+                    //assign all attributes and values
+                    attrArray.forEach(function(attr){
+                        var val = parseFloat(csvCounty[attr]); //get csv attribute value
+                        geojsonProps[attr] = val; //assign attribute and value to geojson properties
+                    });
+                };
+            };
+        };
             
         //add US states to map
         var states = map.append("path")
@@ -58,6 +84,7 @@ function setMap(){
                 return "counties " + d.properties.countyFIPS;
             })
             .attr("d", path); //project data as geometry in svg
-        console.log(csvData);
+        //console.log(csvData);
+        console.log(coloradoCounties);
     };
 };
