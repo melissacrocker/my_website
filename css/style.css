@@ -5,7 +5,7 @@
     color: #FCFFFE;
     width: 1580px;
     height: 80px;
-    }
+}
 
 h1 {
     text-align: center;
@@ -17,7 +17,7 @@ h1 {
     text-transform: capitalize;
 }
 
-#info{
+#info {
     text-align: center;
     font-size: 20px;
     width: 1580px;
@@ -25,7 +25,16 @@ h1 {
     
 }
 
-p{
+#sources {
+    position: absolute;
+    top:750px;
+    left:40px;
+    width: 1580px;
+    height: 140px;
+    font-size: 16px;
+}
+
+p {
     padding: .05px;
     
 }
@@ -55,6 +64,7 @@ p{
     font-family: "Lucida Console", Monaco, monospace;
     font-size: 1.25em;
     font-weight: bold;
+    stroke: brown;
 }
 
 .chartBackground {
@@ -117,4 +127,8 @@ option {
     padding: 0;
     display: inline-block;
     line-height: 1em;
+}
+
+a {
+  color: firebrick;
 }

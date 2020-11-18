@@ -280,7 +280,7 @@
         var titleOption = dropdown.append("option")
             .attr("class", "titleOption")
             .attr("disabled", "true")
-            .text("Select Attribute");
+            .text("Select Variable");
 
         //add attribute name options
         var attrOptions = dropdown.selectAll("attrOptions")

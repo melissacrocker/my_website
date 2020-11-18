@@ -11,12 +11,16 @@
 
 	<body>
         <nav id ="nav" class="navbar navbar-inverse navbar-fixed-top">
-            <a class="navbar-brand"> <h1>COVID-19 Statistics Viewer</h1></a>
+             <h1>COVID-19 Statistics Viewer</h1>
         </nav>
         <div id="info">
             <p>As COVID-19 cases continue to rise at alarming rates across the United States, Colorado is no exception.</p> <p>This visualization is an attempt to investigate how different counties are impacted within Colorado.</p>
             <p>You can use the dropdown to examine the data by different variables that may lead to interesting insights about how COVD-19 cases are related to poverty and insurance status.</p>
         </div>
+        <nav id ="sources" class="navbar fixed-bottom">
+            <p>This data is compiled from several sources. The COVID-19 case numbers come from <a href="https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/">USA Facts</a> and are current as of October 31, 2020. The insurance and poverty data are from the United States Census and are estimated for 2018.</p> 
+            <p>The insurance data is can be found at <a href="https://www.census.gov/data-tools/demo/sahie/#/?s_statefips=08&s_agecat=0">SAHIE</a> and the poverty data can be found at <a href="https://www.census.gov/data-tools/demo/saipe/#/?map_geoSelector=aa_c&s_state=08">SAIPE</a>. </p>
+        </nav>
         <!--script links here-->
         <script type="text/javascript" src="lib/d3.v4.js"></script>
         <script type="text/javascript" src="lib/d3-selection.v1.js"></script> 
