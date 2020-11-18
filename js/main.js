@@ -3,11 +3,11 @@
 (function(){
 
     //pseudo-global variables for data join
-    var attrArray = ["totCases", "totDeaths", "NUM_Unins", "EST_TOT_PV", "MEDI_INC"]; //list of attributes
+    var attrArray = ["Infection Rate", "Mortality Rate", "Uninsured Rate", "Poverty Rate", "Poverty Rate Under 18"]; //list of attributes
     var expressed = attrArray[0]; //initial attribute
 
     //chart frame dimensions
-    var chartWidth = window.innerWidth * 0.425,
+    var chartWidth = window.innerWidth * 0.375,
         chartHeight = 473,
         leftPadding = 25,
         rightPadding = 2,
@@ -19,7 +19,7 @@
     //create a scale to size bars proportionally to frame and for axis
     var yScale = d3.scaleLinear()
         .range([463, 0])
-        .domain([0, 110]);
+        .domain([0, .45]);
     
     //begin script when window loads
     window.onload = setMap();
@@ -28,7 +28,7 @@
     function setMap(){
     
         //map frame dimensions
-        var width = window.innerWidth * 0.5,
+        var width = window.innerWidth * 0.55,
             height = 460;
 
         //create new svg container for the map
@@ -85,7 +85,9 @@
         
             //add dropdown to the map
             createDropdown(csvData);
+            
         };//end of callback
+        
     };//end of setMap()
     
     //joins data
@@ -98,7 +100,6 @@
 
             //loop through geojson counties to find correct county
             for (var a=0; a<coloradoCounties.length; a++){
-
                 var geojsonProps = coloradoCounties[a].properties; //the current county geojson properties
                 var geojsonKey = geojsonProps.countyFIPS; //the geojson primary key
 
@@ -119,6 +120,7 @@
     
     // set enumeration units
     function setEnumerationUnits(coloradoCounties, map, path, colorScale){
+        
         //add Colorado counties to map
         var counties = map.selectAll(".counties")
             .data(coloradoCounties)
@@ -130,7 +132,19 @@
             .attr("d", path) //project data as geometry in svg
             .style("fill", function(d){
                 return choropleth(d.properties, colorScale);
-            });
+            })
+            .on("mouseover", function(d){
+                highlight(d.properties);
+            })
+            .on("mouseout", function(d){
+                dehighlight(d.properties);
+            })
+            .on("mousemove", moveLabel);
+        
+        //add style descriptor to each path
+        var desc = counties.append("desc")
+            .text('{"stroke": "#000", "stroke-width": "0.5px"}');
+        
     };//end of setEnumerationUnits()
     
     //function to create color scale generator
@@ -169,6 +183,7 @@
         colorScale.domain(domainArray);
 
         return colorScale;
+        
     }; //end of makeColorScale()
     
     //function to test for data value and return color
@@ -183,6 +198,7 @@
         } else {
             return "#CCC";
         };
+        
     };//end choropleth()
     
     //function to create coordinated bar chart
@@ -202,11 +218,6 @@
             .attr("height", chartInnerHeight)
             .attr("transform", translate);
 
-        //create a scale to size bars proportionally to frame and for axis
-        var yScale = d3.scaleLinear()
-            .range([463, 0])
-            .domain([0, 20000]);
-
         //set bars for each county
         var bars = chart.selectAll(".bar")
             .data(csvData)
@@ -219,12 +230,19 @@
                 return "bar " + d.countyFIPS;
             })
             .attr("width", chartInnerWidth / csvData.length - 1)
+            .on("mouseover", highlight)
+            .on("mouseout", dehighlight)
+            .on("mousemove", moveLabel);
+        
+        //add style descriptor to each rect
+        var desc = bars.append("desc")
+            .text('{"stroke": "none", "stroke-width": "0px"}');
 
         //create a text element for the chart title
         var chartTitle = chart.append("text")
             .attr("x", 40)
             .attr("y", 40)
-            .attr("class", "chartTitle")
+            .attr("class", "chartTitle");
 
         //create vertical axis generator
         var yAxis = d3.axisLeft()
@@ -285,7 +303,7 @@
         //recolor enumeration units
         var counties = d3.selectAll(".counties")
             .transition()
-            .duration(1000)
+            .duration(500)
             .style("fill", function(d){
                 return choropleth(d.properties, colorScale)
             });
@@ -301,7 +319,7 @@
             .delay(function(d, i){
                 return i * 20
             })
-            .duration(500);
+            .duration(100);
         
         updateChart(bars, csvData.length, colorScale);
     
@@ -329,6 +347,104 @@
             })
         
         var chartTitle = d3.select(".chartTitle")
-            .text("Number of " + expressed + " in each county");
+            .text(expressed + " in each county");
+        
     };//end updateChart()
+    
+    //function to highlight enumeration units and bars
+    function highlight(props){
+        
+    //change stroke
+    var selected = d3.selectAll("." + props.countyFIPS)
+        .style("stroke", "black")
+        .style("stroke-width", "3");
+        
+    setLabel(props);
+        
+    };//end of highlight()
+    
+     //function to reset the element style on mouseout
+    function dehighlight(props){
+        var selected = d3.selectAll("." + props.countyFIPS)
+            .style("stroke", function(){
+                return getStyle(this, "stroke")
+            })
+            .style("stroke-width", function(){
+                return getStyle(this, "stroke-width")
+            });
+
+        function getStyle(element, styleName){
+            
+            var styleText = d3.select(element)
+                .select("desc")
+                .text();
+
+            var styleObject = JSON.parse(styleText);
+
+            return styleObject[styleName];
+            
+            
+            
+        };//end of getStyle  
+        
+        //remove info label
+        d3.select(".infolabel")
+            .remove();
+        
+    };//end of dehighlight()
+    
+    //function to create dynamic label
+    function setLabel(props){
+        //label content
+        var labelAttribute = "<h1>" + props[expressed] +
+            "</h1><b>" + expressed + "</b>";
+
+        //create info label div
+        var infolabel = d3.select("body")
+            .append("div")
+            .attr("class", "infolabel")
+            .attr("id", props.countyFIPS + "_label")
+            .html(labelAttribute);
+
+        var countyName = infolabel.append("div")
+            .attr("class", "labelname")
+            .html(props.name);
+        
+    };//end of setLable()
+    
+    //function to move info label with mouse
+    function moveLabel(){
+        //use coordinates of mousemove event to set label coordinates
+        var x = d3.event.clientX + 10,
+            y = d3.event.clientY - 75;
+
+        d3.select(".infolabel")
+            .style("left", x + "px")
+            .style("top", y + "px");
+    };//end of moveLabel()
+    
+    //function to move info label with mouse
+    function moveLabel(){
+        //get width of label
+        var labelWidth = d3.select(".infolabel")
+            .node()
+            .getBoundingClientRect()
+            .width;
+
+        //use coordinates of mousemove event to set label coordinates
+        var x1 = d3.event.clientX + 10,
+            y1 = d3.event.clientY - 75,
+            x2 = d3.event.clientX - labelWidth - 10,
+            y2 = d3.event.clientY + 25;
+
+        //horizontal label coordinate, testing for overflow
+        var x = d3.event.clientX > window.innerWidth - labelWidth - 20 ? x2 : x1; 
+        //vertical label coordinate, testing for overflow
+        var y = d3.event.clientY < 75 ? y2 : y1; 
+
+        d3.select(".infolabel")
+            .style("left", x + "px")
+            .style("top", y + "px");
+    };//end of moveLabel()
+    
 })(); //last line of main.js

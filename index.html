@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8">
-		<title>COVID 19 Statistics</title>
+		<title>COVID-19 Statistics</title>
         
         <!--stylesheet links here-->
         <link rel="stylesheet" href="css/style.css">
@@ -10,10 +10,17 @@
 	</head>
 
 	<body>
-        
+        <nav id ="nav" class="navbar navbar-inverse navbar-fixed-top">
+            <a class="navbar-brand"> <h1>COVID-19 Statistics Viewer</h1></a>
+        </nav>
+        <div id="info">
+            <p>As COVID-19 cases continue to rise at alarming rates across the United States, Colorado is no exception.</p> <p>This visualization is an attempt to investigate how different counties are impacted within Colorado.</p>
+            <p>You can use the dropdown to examine the data by different variables that may lead to interesting insights about how COVD-19 cases are related to poverty and insurance status.</p>
+        </div>
         <!--script links here-->
         <script type="text/javascript" src="lib/d3.v4.js"></script>
-        <!--<script type="text/javascript" src="lib/d3-selection.v1.js"></script> -->
+        <script type="text/javascript" src="lib/d3-selection.v1.js"></script> 
+        <script type="text/javascript" src="lib/d3-transition.v2.min.js"></script>
         <script type="text/javascript" src="lib/d3-queue.v2.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="lib/topojson.js" charset="utf-8"></script>
         <script type="text/javascript" src="lib/d3-array.v2.min.js"></script>
